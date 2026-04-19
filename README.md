@@ -44,6 +44,7 @@ Premium tiers (coming soon at gridsense.ai) unlock 24-hour forecasting, 7-day pr
 | 7-day forecast | 🔒 | ✅ | ✅ |
 | Smart appliance scheduler | 🔒 | ✅ | ✅ |
 | Price spike alerts | 🔒 | ✅ | ✅ |
+| Postcode regional pricing (DNO-accurate) | 🔒 | ✅ | ✅ |
 | Tariff comparison & switching advisor | 🔒 | 🔒 | ✅ |
 | Monthly savings report (PDF) | 🔒 | 🔒 | ✅ |
 | Multi-site monitoring | 🔒 | 🔒 | ✅ |
@@ -161,7 +162,8 @@ GridSense Labs acts as the **top of the funnel** — users with complex multi-si
 - [ ] Push / email price spike alerts
 - [ ] 24-hour and 7-day forecast (Prophet model)
 - [ ] Smart appliance scheduling engine
-- [ ] Tariff comparison with live Ofgem data
+- [ ] **Postcode-level regional pricing** — DNO region detection, region-accurate unit rates and standing charges across all 14 UK DNO regions
+- [ ] Tariff comparison with live Ofgem data and postcode-adjusted rates
 - [ ] Mobile app (React Native)
 - [ ] gridsense.ai domain launch
 
