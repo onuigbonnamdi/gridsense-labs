@@ -324,6 +324,67 @@ with st.sidebar:
                                    help="Check your energy bill for your unit rate")
 
     st.markdown("---")
+    st.subheader("📮 Postcode")
+    postcode_raw = st.text_input("Your postcode", value="SW1A", max_chars=8,
+                                  help="Used to identify your DNO region for accurate regional pricing").upper().strip()
+
+    # DNO region lookup by postcode prefix
+    DNO_REGIONS = {
+        "E": ("Eastern", 24.1, 52.5), "EC": ("London", 26.3, 55.1),
+        "N": ("London", 26.3, 55.1), "NW": ("North West", 23.8, 51.9),
+        "SE": ("South East", 25.2, 54.0), "SW": ("South West", 24.8, 53.5),
+        "W": ("London", 26.3, 55.1), "WC": ("London", 26.3, 55.1),
+        "B": ("West Midlands", 23.5, 52.8), "BS": ("South West", 24.8, 53.5),
+        "CF": ("South Wales", 23.2, 52.1), "CV": ("West Midlands", 23.5, 52.8),
+        "DE": ("East Midlands", 23.9, 53.1), "DH": ("North East", 22.8, 51.5),
+        "DL": ("North East", 22.8, 51.5), "DN": ("Yorkshire", 23.4, 53.0),
+        "EH": ("Scotland", 22.1, 50.8), "EX": ("South West", 24.8, 53.5),
+        "FK": ("Scotland", 22.1, 50.8), "G": ("Scotland", 22.1, 50.8),
+        "GL": ("South West", 24.8, 53.5), "GU": ("South East", 25.2, 54.0),
+        "HG": ("Yorkshire", 23.4, 53.0), "HP": ("South East", 25.2, 54.0),
+        "HR": ("West Midlands", 23.5, 52.8), "HU": ("Yorkshire", 23.4, 53.0),
+        "IP": ("Eastern", 24.1, 52.5), "KT": ("London", 26.3, 55.1),
+        "KY": ("Scotland", 22.1, 50.8), "L": ("North West", 23.8, 51.9),
+        "LA": ("North West", 23.8, 51.9), "LE": ("East Midlands", 23.9, 53.1),
+        "LL": ("North Wales", 23.0, 52.0), "LN": ("East Midlands", 23.9, 53.1),
+        "LS": ("Yorkshire", 23.4, 53.0), "M": ("North West", 23.8, 51.9),
+        "ME": ("South East", 25.2, 54.0), "MK": ("South East", 25.2, 54.0),
+        "NE": ("North East", 22.8, 51.5), "NG": ("East Midlands", 23.9, 53.1),
+        "NN": ("East Midlands", 23.9, 53.1), "NR": ("Eastern", 24.1, 52.5),
+        "OX": ("South East", 25.2, 54.0), "PE": ("Eastern", 24.1, 52.5),
+        "PH": ("Scotland", 22.1, 50.8), "PL": ("South West", 24.8, 53.5),
+        "PO": ("South East", 25.2, 54.0), "PR": ("North West", 23.8, 51.9),
+        "RG": ("South East", 25.2, 54.0), "RH": ("South East", 25.2, 54.0),
+        "RM": ("London", 26.3, 55.1), "S": ("Yorkshire", 23.4, 53.0),
+        "SA": ("South Wales", 23.2, 52.1), "SK": ("North West", 23.8, 51.9),
+        "SL": ("South East", 25.2, 54.0), "SM": ("London", 26.3, 55.1),
+        "SN": ("South West", 24.8, 53.5), "SO": ("South East", 25.2, 54.0),
+        "SP": ("South West", 24.8, 53.5), "SR": ("North East", 22.8, 51.5),
+        "SS": ("Eastern", 24.1, 52.5), "ST": ("West Midlands", 23.5, 52.8),
+        "SY": ("West Midlands", 23.5, 52.8), "TA": ("South West", 24.8, 53.5),
+        "TD": ("Scotland", 22.1, 50.8), "TF": ("West Midlands", 23.5, 52.8),
+        "TN": ("South East", 25.2, 54.0), "TQ": ("South West", 24.8, 53.5),
+        "TR": ("South West", 24.8, 53.5), "TS": ("North East", 22.8, 51.5),
+        "TW": ("London", 26.3, 55.1), "UB": ("London", 26.3, 55.1),
+        "WA": ("North West", 23.8, 51.9), "WD": ("London", 26.3, 55.1),
+        "WF": ("Yorkshire", 23.4, 53.0), "WN": ("North West", 23.8, 51.9),
+        "WR": ("West Midlands", 23.5, 52.8), "WS": ("West Midlands", 23.5, 52.8),
+        "WV": ("West Midlands", 23.5, 52.8), "YO": ("Yorkshire", 23.4, 53.0),
+    }
+    # Match postcode prefix (try 2 chars, then 1)
+    prefix2 = postcode_raw[:2].rstrip("0123456789")
+    prefix1 = postcode_raw[:1]
+    dno_match = DNO_REGIONS.get(prefix2) or DNO_REGIONS.get(prefix1)
+
+    if dno_match:
+        dno_region, dno_rate, _ = dno_match
+        st.success(f"📍 **{dno_region}** DNO region detected")
+        st.caption(f"Regional avg rate: ~{dno_rate}p/kWh  \n"
+                   f"*Upgrade to Plus for region-accurate pricing*")
+    else:
+        dno_region, dno_rate = "Unknown", custom_rate
+        st.caption("Enter a valid UK postcode prefix for regional pricing")
+    st.markdown("---")
     predict_btn = st.button("⚡ Analyse Now", use_container_width=True, type="primary")
     st.markdown("---")
     st.caption("**GridSense Labs** · Powered by Verdant Innovations  \n"
@@ -464,9 +525,10 @@ with tab1:
         st.markdown("#### 📋 Reading Summary")
         df_sum = pd.DataFrame({
             "": ["Your reading (15m ago)", "Your reading (30m ago)", "Property type",
-                 "Tariff rate", "Grid price now", "Weather"],
+                 "Tariff rate", "Grid price now", "DNO Region", "Weather"],
             "Value": [f"{lag1_in} kW", f"{lag2_in} kW", prop,
                       f"{custom_rate}p/kWh", f"{price_pkwh}p/kWh",
+                      f"{dno_region} (~{dno_rate}p/kWh avg)",
                       f"{weather['temp']}°C, {weather['wind']}m/s wind"],
         })
         st.dataframe(df_sum, hide_index=True, use_container_width=True)
