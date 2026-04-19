@@ -8,7 +8,7 @@
 
 ## 🌐 Live App
 
-> **[https://gridsense-labs.streamlit.app/](https://gridsense-labs.streamlit.app)** ← *(update with your Streamlit URL after deploying)*
+> **[https://gridsense-labs.streamlit.app/](https://gridsense-labs.streamlit.app)** 
 
 ---
 
